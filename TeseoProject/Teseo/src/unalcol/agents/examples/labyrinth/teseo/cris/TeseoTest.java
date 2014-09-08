@@ -40,7 +40,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         Nodo lux = new Nodo();
         
         //Inicio
-        System.out.println(m_dir + " - [" + m_pos[0] + "," + m_pos[1] + "] - "+ m_lDir);
+        System.out.println(m_dir + " - " + m_lDir + " - " + m_mapa);
         
         if (MT) return -1;
         
@@ -116,10 +116,13 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
                 break;
             case 1:
                 m_pos[0]++;
+                break;
             case 2:
                 m_pos[1]--;
+                break;
             case 3:
                 m_pos[0]--;
+                break;
             default:
                 break;
         }
@@ -134,7 +137,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
             changeDir(3);
             changePos();
             if(m_f){
-                m_lDir = newDir(3);
+                m_lDir = m_dir;
                 m_f = false;
             }
             return 3;
@@ -143,7 +146,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
             changeDir(0);
             changePos();
             if(m_f){
-                m_lDir = newDir(0);
+                m_lDir = m_dir;
                 m_f = false;
             }
             return 0;
@@ -152,7 +155,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
             changeDir(1);
             changePos();
             if(m_f){
-                m_lDir = newDir(1);
+                m_lDir = m_dir;
                 m_f = false;
             }
             return 1;
@@ -161,7 +164,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         changeDir(2);
         changePos();
         if(m_f){
-            m_lDir = newDir(2);
+            m_lDir = m_dir;
             m_f = false;
         }
         return 2;

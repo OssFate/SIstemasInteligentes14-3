@@ -1,14 +1,15 @@
 package unalcol.agents.examples.labyrinth.teseo.cris;
 
 import java.util.TreeMap;
-import unalcol.agents.examples.labyrinth.teseo.simple.Nodo;
 
 public class TeseoTest extends SimpleTeseoAgentProgramNew{
     
     private int[] m_pos;
     private byte m_dir;
+    private byte m_lDir;
     
-    private Nodo m_anterior;
+    private boolean m_f;
+    private String m_anterior;
     
     private TreeMap<String,Nodo> m_mapa;
     
@@ -19,8 +20,16 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         m_pos = new int[2];
         m_pos[0] = 0; m_pos[1] = 0;
         
+        m_f = true;
         m_dir = 0;
+        m_lDir = 0;
         this.m_mapa = new TreeMap<String,Nodo>();
+        
+        //Crear nodo Incial (0,0) con las paredes que se tengan en el nodo
+        //guiando de tal manera que @true seria si hay camino y @false si no hay camino
+        //Nodo actual = New Nodo();
+        m_mapa.put(actualPos(), new Nodo());
+        m_anterior = actualPos();
     }
     
   
@@ -28,28 +37,47 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
     @Override
     public int accion(boolean PF, boolean PD, boolean PA, boolean PI, boolean MT) {
         
+        Nodo lux = new Nodo();
+        
         //Inicio
-        
-        //Crear nodo Incial (0,0) con las paredes que se tengan en el nodo
-        //guiando de tal manera que @true seria si hay camino y @false si no hay camino
-        //Nodo actual = New Nodo();
-        
-        //------mapa.add(pos, !PF, !PD, !PA, !PI);
+        System.out.println(m_dir + " - [" + m_pos[0] + "," + m_pos[1] + "] - "+ m_lDir);
         
         if (MT) return -1;
         
         if(bifurcacion(PF, PD, PA, PI)){
             //Existe nodo en esta posicion?
+            if(m_mapa.containsKey(actualPos())){
             //Si!
+                lux = m_mapa.get(actualPos());
+                lux.asignarNodos(m_mapa.get(m_anterior), newDir(2));
+                m_mapa.get(m_anterior).asignarNodos(lux, m_lDir);
                 //Tiene vias?
+                if(!lux.hasNoWays()){
                 //SI!!
                     //changeDir(<Valor del return subsiguiente>);
+                    changeDir(lux.takeWay());
                     //Take one of those --AQUI RETURN--
+                    changePos();
+                    m_f = true;
+                    return lux.takeWay();
+                }
+                else{
                 //NO!!
-                    //changeDir(2);
-                    //return 2;
+                    changeDir(2);
+                    m_f = true;
+                    changePos();
+                    return 2;
+                }
+            }
             //NO!!
+            else {
                 //Create New Node
+                m_mapa.put(actualPos(), new Nodo());
+                m_mapa.get(actualPos()).sealWalls(PF, PD, PI);
+                m_mapa.get(actualPos()).asignarNodos(m_mapa.get(m_anterior), newDir(2));
+                m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_lDir);
+                m_f = true;
+            }
         }
           
         return walkAlgorithm(PF, PD, PA, PI);
@@ -105,22 +133,55 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         if (!PI){
             changeDir(3);
             changePos();
+            if(m_f){
+                m_lDir = newDir(3);
+                m_f = false;
+            }
             return 3;
         }
         if (!PF){
             changeDir(0);
             changePos();
+            if(m_f){
+                m_lDir = newDir(0);
+                m_f = false;
+            }
             return 0;
         }
         if (!PD){
             changeDir(1);
             changePos();
+            if(m_f){
+                m_lDir = newDir(1);
+                m_f = false;
+            }
             return 1;
         }
         
         changeDir(2);
         changePos();
+        if(m_f){
+            m_lDir = newDir(2);
+            m_f = false;
+        }
         return 2;
+    }
+
+    /**
+     * Retorna un @String como la key para el treemap
+     * @return 
+     */
+    private String actualPos() {
+        return m_pos[0] + "," + m_pos[1];
+    }
+
+    /**
+     * Retorna una posicion de guardado para @Nodo dependiendo de la direccion actual
+     * @param i
+     * @return 
+     */
+    private byte newDir(int i) {
+        return (byte) ((m_dir + i) % 4);
     }
 
 }

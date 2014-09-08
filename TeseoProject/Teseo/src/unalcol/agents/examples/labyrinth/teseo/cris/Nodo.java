@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package unalcol.agents.examples.labyrinth.teseo.simple;
+package unalcol.agents.examples.labyrinth.teseo.cris;
 
 /**
  *
@@ -39,7 +39,7 @@ public class Nodo {
      * @param pos 
      * 
      */
-    public void asignarNodos(Nodo nodo, int pos ){
+    public void asignarNodos(Nodo nodo, byte pos ){
         if(pos == 0){
             this.arriba = nodo;
             walls = (byte)(walls | 1);
@@ -59,7 +59,34 @@ public class Nodo {
         }
         
     }
-    
-    
+
+    protected boolean hasNoWays() {
+        return walls == 15;
+    }
+
+    protected int takeWay() {
+        if((walls & 1) != 0) return 0;
+        if((walls & 2) != 0) return 1;
+        if((walls & 8) != 0) return 3;
+        return 2;
+    }
+
+    void sealWalls(boolean PF, boolean PD, boolean PI) {
+        if(PF) walls = (byte) (walls | 1);
+        if(PD) walls = (byte) (walls | 2);
+        if(PI) walls = (byte) (walls | 8);
+        walls =        (byte) (walls | 4);
+    }
+
+    @Override
+    public String toString() {
+        boolean[] lol = new boolean[4];
+        lol[0] = this.arriba != null;
+        lol[1] = this.derecha != null;
+        lol[2] = this.abajo != null;
+        lol[3] = this.izquierda != null;
+        
+        return "[" + lol[0] + "," + lol[1] + "," + lol[2] + "," + lol[3] + "]";
+    }
     
 }

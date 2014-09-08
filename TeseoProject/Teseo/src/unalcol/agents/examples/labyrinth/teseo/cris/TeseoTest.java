@@ -1,11 +1,18 @@
 package unalcol.agents.examples.labyrinth.teseo.cris;
 
 import java.util.TreeMap;
+import unalcol.agents.examples.labyrinth.teseo.simple.Nodo;
 
 public class TeseoTest extends SimpleTeseoAgentProgramNew{
     
     private int[] m_pos;
     private byte m_dir;
+    
+    private Nodo m_anterior;
+    
+    private TreeMap<String,Nodo> m_mapa;
+    
+    
 
     public TeseoTest() {
         //Inicializacion de Variables
@@ -13,12 +20,10 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         m_pos[0] = 0; m_pos[1] = 0;
         
         m_dir = 0;
+        this.m_mapa = new TreeMap<String,Nodo>();
     }
     
-    /**
-     * Estructura de Datos, que va a ser una HashTable (ni idea), un TreeMAP***
-     * @mapa
-     */
+  
     
     @Override
     public int accion(boolean PF, boolean PD, boolean PA, boolean PI, boolean MT) {
@@ -27,6 +32,8 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         
         //Crear nodo Incial (0,0) con las paredes que se tengan en el nodo
         //guiando de tal manera que @true seria si hay camino y @false si no hay camino
+        //Nodo actual = New Nodo();
+        
         //------mapa.add(pos, !PF, !PD, !PA, !PI);
         
         if (MT) return -1;
@@ -45,7 +52,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
                 //Create New Node
         }
           
-        return walkAlgo(PF, PD, PA, PI);
+        return walkAlgorithm(PF, PD, PA, PI);
     }
     
     /**
@@ -94,7 +101,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         m_dir = (byte) ((m_dir+i)%4);
     }
 
-    private int walkAlgo(boolean PF, boolean PD, boolean PA, boolean PI) {
+    private int walkAlgorithm(boolean PF, boolean PD, boolean PA, boolean PI) {
         if (!PI){
             changeDir(3);
             changePos();

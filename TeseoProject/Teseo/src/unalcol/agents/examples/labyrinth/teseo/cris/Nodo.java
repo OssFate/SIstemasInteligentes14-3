@@ -71,11 +71,34 @@ public class Nodo {
         return 2;
     }
 
-    void sealWalls(boolean PF, boolean PD, boolean PI) {
+    void sealWalls(boolean PF, boolean PD, boolean PI, byte dir) {
+        if(dir == 0){
         if(PF) walls = (byte) (walls | 1);
         if(PD) walls = (byte) (walls | 2);
-        if(PI) walls = (byte) (walls | 8);
+        if(PI) walls = (byte) (walls| 8);
         walls =        (byte) (walls | 4);
+        }
+        
+        if(dir == 1){
+        if(PF) walls = (byte) (walls | 2);
+        if(PD) walls = (byte) (walls | 4);
+        if(PI) walls = (byte) (walls | 1);
+        walls =        (byte) (walls | 8);
+        }
+        
+        if(dir == 2){
+        if(PF) walls = (byte) (walls | 4);
+        if(PD) walls = (byte) (walls | 8);
+        if(PI) walls = (byte) (walls | 2);
+        walls =        (byte) (walls | 1);
+        }
+        
+        if(dir == 3){
+        if(PF) walls = (byte) (walls | 8);
+        if(PD) walls = (byte) (walls | 1);
+        if(PI) walls = (byte) (walls | 4);
+        walls =        (byte) (walls | 2);
+        }
         System.out.println("WALLZ SEALED!!!! = " + walls + " , " + PF + " , " + PD + " , " + PI);
     }
     

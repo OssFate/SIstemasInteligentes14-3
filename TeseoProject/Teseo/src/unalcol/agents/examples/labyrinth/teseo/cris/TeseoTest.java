@@ -100,7 +100,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
             else {
                 //Create New Node
                 m_mapa.put(actualPos(), new Nodo());
-                m_mapa.get(actualPos()).sealWalls(PF, PD, PI);
+                m_mapa.get(actualPos()).sealWalls(PF, PD, PI, m_dir);
                 m_mapa.get(actualPos()).asignarNodos(m_mapa.get(m_anterior), newDir(2));
                 m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_lDir);
                 m_anterior = actualPos();

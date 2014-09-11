@@ -76,8 +76,9 @@ public class Nodo {
         if(PD) walls = (byte) (walls | 2);
         if(PI) walls = (byte) (walls | 8);
         walls =        (byte) (walls | 4);
+        System.out.println("WALLZ SEALED!!!! = " + walls + " , " + PF + " , " + PD + " , " + PI);
     }
-
+    
     @Override
     public String toString() {
         boolean[] lol = new boolean[4];
@@ -86,7 +87,11 @@ public class Nodo {
         lol[2] = this.abajo != null;
         lol[3] = this.izquierda != null;
         
-        return "[" + lol[0] + "," + lol[1] + "," + lol[2] + "," + lol[3] + "]";
+        return "[" + lol[0] + "," + lol[1] + "," + lol[2] + "," + lol[3] + " - " + Integer.toBinaryString(walls) + "]";
+    }
+
+    void sealWall(byte newDir) {
+        walls = (byte) (walls | 2^newDir);
     }
     
 }

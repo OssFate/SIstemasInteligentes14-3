@@ -4,13 +4,35 @@ import java.util.TreeMap;
 
 public class TeseoTest extends SimpleTeseoAgentProgramNew{
     
+    /**
+     * posicion actual
+     */
     private int[] m_pos;
+    
+    /**
+     * Direccion en la que esta mirando, absoluta en base al inicio
+     * inicializandolo con 0 hacia donde comienza mirando.
+     */
     private byte m_dir;
+    
+    /**
+     * Direccion de la cual sale de un nodo.
+     */
     private byte m_lDir;
     
+    /**
+     * Flag, para actualizar @m_lDir.
+     */
     private boolean m_f;
+    
+    /**
+     * Key en el Treemap referente al ultimo nodo visitado.
+     */
     private String m_anterior;
     
+    /**
+     * Estructura de Datos con los NODOS
+     */
     private TreeMap<String,Nodo> m_mapa;
     
     
@@ -49,9 +71,14 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
             if(m_mapa.containsKey(actualPos())){
             //Si!
                 lux = m_mapa.get(actualPos());
-                lux.asignarNodos(m_mapa.get(m_anterior), newDir(2));
-                m_mapa.get(m_anterior).asignarNodos(lux, m_lDir);
+                
+                if(!m_anterior.equals(actualPos())){
+                    lux.asignarNodos(m_mapa.get(m_anterior), newDir(2));
+                    m_mapa.get(m_anterior).asignarNodos(lux, m_lDir);
+                }
+                else lux.sealWall(newDir(2));
                 //Tiene vias?
+                System.out.println("Lux has NO FUCKING WAYZ!!! = " + lux.hasNoWays());
                 if(!lux.hasNoWays()){
                 //SI!!
                     //changeDir(<Valor del return subsiguiente>);
@@ -76,6 +103,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
                 m_mapa.get(actualPos()).sealWalls(PF, PD, PI);
                 m_mapa.get(actualPos()).asignarNodos(m_mapa.get(m_anterior), newDir(2));
                 m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_lDir);
+                m_anterior = actualPos();
                 m_f = true;
             }
         }

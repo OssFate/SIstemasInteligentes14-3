@@ -42,79 +42,114 @@ public class Nodo {
     public void asignarNodos(Nodo nodo, byte pos ){
         if(pos == 0){
             this.arriba = nodo;
-            walls = (byte)(walls | 1);
+            walls = (byte)(getWalls() | 1);
         }
         if(pos == 1){
             this.derecha = nodo;
-            walls = (byte)(walls | 2);
+            walls = (byte)(getWalls() | 2);
         }
         if(pos == 2){
             this.abajo = nodo;
-            walls = (byte)(walls | 4);
+            walls = (byte)(getWalls() | 4);
         }
         
         if(pos == 3){
             this.izquierda = nodo;
-            walls = (byte)(walls | 8);
+            walls = (byte)(getWalls() | 8);
         }
         
     }
 
     protected boolean hasNoWays() {
-        return walls == 15;
+        return getWalls() == 15;
     }
 
     protected int takeWay() {
-        if((walls & 1) != 0) return 0;
-        if((walls & 2) != 0) return 1;
-        if((walls & 8) != 0) return 3;
+        if((getWalls() & 1) != 0) return 0;
+        if((getWalls() & 2) != 0) return 1;
+        if((getWalls() & 8) != 0) return 3;
         return 2;
     }
 
     void sealWalls(boolean PF, boolean PD, boolean PI, byte dir) {
         if(dir == 0){
-        if(PF) walls = (byte) (walls | 1);
-        if(PD) walls = (byte) (walls | 2);
-        if(PI) walls = (byte) (walls| 8);
-        walls =        (byte) (walls | 4);
+        if(PF) walls = (byte) (getWalls() | 1);
+        if(PD) walls = (byte) (getWalls() | 2);
+        if(PI) walls = (byte) (getWalls()| 8);
+        walls =        (byte) (getWalls() | 4);
         }
         
         if(dir == 1){
-        if(PF) walls = (byte) (walls | 2);
-        if(PD) walls = (byte) (walls | 4);
-        if(PI) walls = (byte) (walls | 1);
-        walls =        (byte) (walls | 8);
+        if(PF) walls = (byte) (getWalls() | 2);
+        if(PD) walls = (byte) (getWalls() | 4);
+        if(PI) walls = (byte) (getWalls() | 1);
+        walls =        (byte) (getWalls() | 8);
         }
         
         if(dir == 2){
-        if(PF) walls = (byte) (walls | 4);
-        if(PD) walls = (byte) (walls | 8);
-        if(PI) walls = (byte) (walls | 2);
-        walls =        (byte) (walls | 1);
+        if(PF) walls = (byte) (getWalls() | 4);
+        if(PD) walls = (byte) (getWalls() | 8);
+        if(PI) walls = (byte) (getWalls() | 2);
+        walls =        (byte) (getWalls() | 1);
         }
         
         if(dir == 3){
-        if(PF) walls = (byte) (walls | 8);
-        if(PD) walls = (byte) (walls | 1);
-        if(PI) walls = (byte) (walls | 4);
-        walls =        (byte) (walls | 2);
+        if(PF) walls = (byte) (getWalls() | 8);
+        if(PD) walls = (byte) (getWalls() | 1);
+        if(PI) walls = (byte) (getWalls() | 4);
+        walls =        (byte) (getWalls() | 2);
         }
-        System.out.println("WALLZ SEALED!!!! = " + walls + " , " + PF + " , " + PD + " , " + PI);
+        System.out.println("WALLZ SEALED!!!! = " + getWalls() + " , " + PF + " , " + PD + " , " + PI);
     }
     
     @Override
     public String toString() {
         boolean[] lol = new boolean[4];
-        lol[0] = this.arriba != null;
-        lol[1] = this.derecha != null;
-        lol[2] = this.abajo != null;
-        lol[3] = this.izquierda != null;
+        lol[0] = this.getArriba() != null;
+        lol[1] = this.getDerecha() != null;
+        lol[2] = this.getAbajo() != null;
+        lol[3] = this.getIzquierda() != null;
         
-        return "[" + lol[0] + "," + lol[1] + "," + lol[2] + "," + lol[3] + " - " + Integer.toBinaryString(walls) + "]";
+        return "[" + lol[0] + "," + lol[1] + "," + lol[2] + "," + lol[3] + " - " + Integer.toBinaryString(getWalls()) + "]";
     }
 
     void sealWall(byte newDir) {
-        walls = (byte) (walls | 2^newDir);
+        walls = (byte) (getWalls() | 2^newDir);
+    }
+
+    /**
+     * @return the arriba
+     */
+    public Nodo getArriba() {
+        return arriba;
+    }
+
+    /**
+     * @return the abajo
+     */
+    public Nodo getAbajo() {
+        return abajo;
+    }
+
+    /**
+     * @return the derecha
+     */
+    public Nodo getDerecha() {
+        return derecha;
+    }
+
+    /**
+     * @return the izquierda
+     */
+    public Nodo getIzquierda() {
+        return izquierda;
+    }
+
+    /**
+     * @return the walls
+     */
+    public byte getWalls() {
+        return walls;
     }
     
 }

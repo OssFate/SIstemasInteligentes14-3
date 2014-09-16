@@ -90,6 +90,8 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
                 }
                 else{
                 //NO!!
+                    
+                    //m_mapa.get(m_anterior);
                     changeDir(2);
                     m_f = true;
                     changePos();

@@ -69,11 +69,13 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew {
                 //Sí existe!
                 
                 //si no es un callejon sin salida
-                m_mapa.get(actualPos()).printWalls();
+                System.out.println("actual "+m_mapa.get(actualPos()).printWalls()+" "+m_mapa.get(actualPos()).getNombre());
+                System.out.println("anterior "+m_mapa.get(m_anterior).printWalls()+" "+m_mapa.get(m_anterior).getNombre());
                 if (!m_anterior.equals(actualPos())) {
-
                     m_mapa.get(actualPos()).asignarNodos(m_mapa.get(m_anterior), newDir(2));
-                    m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_lDir);
+                    System.out.println("m_dir "+m_dir);
+                    //m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_lDir);
+                    m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_dir);
                     //se actualiza el nodo anterior
 
                 } //si es un callejon sin salida
@@ -81,20 +83,29 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew {
                     //cierra ese camino sin salida
                     m_mapa.get(actualPos()).sealWall(newDir(2), 2);
                 }
-                m_mapa.get(actualPos()).printWalls();
+                System.out.println("cambio paredes");
+                System.out.println("actual "+m_mapa.get(actualPos()).printWalls()+" "+m_mapa.get(actualPos()).getNombre());
+                System.out.println("anterior "+m_mapa.get(m_anterior).printWalls()+" "+m_mapa.get(m_anterior).getNombre());
+                m_anterior = actualPos();//HERE
                 //Tiene vias?
                 if (!m_mapa.get(actualPos()).hasNoWays()) {
                 //SI tiene vias!!
-
+                    System.out.println("mldir "+m_lDir+" dir antes "+m_dir+" mf "+m_f);
+                    int a = m_mapa.get(actualPos()).takeWay(m_dir);
                     changeDir(m_mapa.get(actualPos()).takeWay(m_dir));
+                    System.out.println("nueva mdir "+m_dir);
                     String aux = actualPos();
 
                     changePos();
                     m_f = true;
                     System.out.println("paredes " + m_mapa.get(aux).printWalls());
                     //el problema esta aca...tal vez!
+                    System.out.println("paredes actuales");
+                    System.out.println(m_mapa.get(aux).printWalls());
+                    System.out.println("this m_dir "+m_dir);
                     System.out.println("direccion tomo " + m_mapa.get(aux).takeWay(m_dir));
-                    return m_mapa.get(aux).takeWay(m_dir);
+                    //return m_mapa.get(aux).takeWay(m_dir);
+                    return a;
                 } else {
                     //NO tiene vias!!
                     System.out.println("TOMO POR NO TIENE VIAS Y YA EXISTE!!!");
@@ -109,7 +120,8 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew {
                 m_mapa.put(actualPos(), new Nodo(actualPos()));
                 m_mapa.get(actualPos()).sealWalls(PF, PD, PI, m_dir);
                 m_mapa.get(actualPos()).asignarNodos(m_mapa.get(m_anterior), newDir(2));
-                m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_lDir);
+                System.out.println("m_dir "+m_dir);
+                m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_dir);
 
                 m_anterior = actualPos();
                 m_f = true;
@@ -182,11 +194,13 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew {
      * @param i
      */
     private void changeDir(int i) {
+       // System.out.println("entrante "+m_dir);
         m_dir = (byte) ((m_dir + i) % 4);
+        //System.out.println("saliente "+m_dir);
     }
 
     private int walkAlgorithm(boolean PF, boolean PD, boolean PI) {
-        System.out.println("actualpos " + actualPos() + " pf " + PF + " " + " PD " + PD + " " + " pi " + PI);
+        System.out.println("actualpos " + actualPos() +" dir "+m_dir+ " pf " + PF + " " + " PD " + PD + " " + " pi " + PI);
         if (!PI) {
             changeDir(3);
             changePos();

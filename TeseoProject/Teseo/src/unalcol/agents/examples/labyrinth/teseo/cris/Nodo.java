@@ -118,19 +118,19 @@ public class Nodo {
             if(paredes[0] != 2) return 3;
             if(paredes[1] != 2) return 0;
             if(paredes[2] != 2) return 1;     
-            return 2;
+            return 3;
         }
         else if(dir == 2){
             if(paredes[1] != 2) return 3;
             if(paredes[2] != 2) return 0;
             if(paredes[3] != 2) return 1;     
-            return 2;
+            return 0;
         }
         else if(dir == 3){
             if(paredes[2] != 2) return 3;
             if(paredes[3] != 2) return 0;
             if(paredes[0] != 2) return 1;     
-            return 2;
+            return 1;
         }
         System.out.println("jamas deberia por aca");
         return 0;

@@ -1,4 +1,4 @@
-package unalcol.agents.examples.labyrinth.teseo.cris;
+package unalcol.agents.examples.labyrinth.teseo.coo;
 
 import java.util.TreeMap;
 
@@ -60,6 +60,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
     public int accion(boolean PF, boolean PD, boolean PA, boolean PI, boolean MT) {
         
         Nodo lux = new Nodo();
+        int m_way = 0;
         
         //Inicio
         System.out.println(m_dir + " - " + m_lDir + " - " + m_mapa);
@@ -78,18 +79,21 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
                 }
                 else lux.sealWall(newDir(2));
                 //Tiene vias?
-                System.out.println("Lux has NO FUCKING WAYZ!!! = " + lux.hasNoWays());
+                System.out.println("Lux has NO F*CKING WAYZ!!! = " + lux.hasNoWays() + " Walls: " + lux.getWalls());
                 if(!lux.hasNoWays()){
                 //SI!!
+                    m_way = takeThisDir(lux.takeWay());
                     //changeDir(<Valor del return subsiguiente>);
-                    changeDir(lux.takeWay());
+                    changeDir(m_way);
                     //Take one of those --AQUI RETURN--
                     changePos();
                     m_f = true;
-                    return lux.takeWay();
+                    return m_way;
                 }
                 else{
                 //NO!!
+                    
+                    //m_mapa.get(m_anterior);
                     changeDir(2);
                     m_f = true;
                     changePos();
@@ -100,7 +104,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
             else {
                 //Create New Node
                 m_mapa.put(actualPos(), new Nodo());
-                m_mapa.get(actualPos()).sealWalls(PF, PD, PI);
+                m_mapa.get(actualPos()).sealWalls(PF, PD, PI, m_dir);
                 m_mapa.get(actualPos()).asignarNodos(m_mapa.get(m_anterior), newDir(2));
                 m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_lDir);
                 m_anterior = actualPos();
@@ -161,14 +165,14 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
     }
 
     private int walkAlgorithm(boolean PF, boolean PD, boolean PA, boolean PI) {
-        if (!PI){
-            changeDir(3);
+        if (!PD){
+            changeDir(1);
             changePos();
             if(m_f){
                 m_lDir = m_dir;
                 m_f = false;
             }
-            return 3;
+            return 1;
         }
         if (!PF){
             changeDir(0);
@@ -179,14 +183,14 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
             }
             return 0;
         }
-        if (!PD){
-            changeDir(1);
+        if (!PI){
+            changeDir(3);
             changePos();
             if(m_f){
                 m_lDir = m_dir;
                 m_f = false;
             }
-            return 1;
+            return 3;
         }
         
         changeDir(2);
@@ -213,6 +217,13 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
      */
     private byte newDir(int i) {
         return (byte) ((m_dir + i) % 4);
+    }
+
+    private int takeThisDir(int takeWay) {
+        int x = 0;
+        x = takeWay - m_dir;
+        if(x < 0) x += 4;
+        return x;
     }
 
 }

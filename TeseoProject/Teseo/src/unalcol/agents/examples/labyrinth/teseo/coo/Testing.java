@@ -1,4 +1,4 @@
-package unalcol.agents.examples.labyrinth.teseo.cris;
+package unalcol.agents.examples.labyrinth.teseo.coo;
 
 import java.util.TreeMap;
 

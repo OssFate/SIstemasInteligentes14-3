@@ -2,7 +2,7 @@ package unalcol.agents.examples.labyrinth.teseo;
 import unalcol.agents.Agent;
 
 import unalcol.agents.examples.labyrinth.*;
-import unalcol.agents.examples.labyrinth.teseo.cris.TeseoTest;
+import unalcol.agents.examples.labyrinth.teseo.coo.TeseoTest;
 import unalcol.agents.examples.labyrinth.teseo.simple.RandomReflexTeseo;
 import unalcol.agents.examples.labyrinth.teseo.simple.TeseoSimple;
 import unalcol.agents.simulate.util.*;

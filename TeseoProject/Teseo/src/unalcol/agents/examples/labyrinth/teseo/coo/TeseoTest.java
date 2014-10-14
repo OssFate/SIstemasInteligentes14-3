@@ -1,5 +1,6 @@
 package unalcol.agents.examples.labyrinth.teseo.coo;
 
+import java.awt.Point;
 import java.util.TreeMap;
 
 public class TeseoTest extends SimpleTeseoAgentProgramNew{
@@ -7,51 +8,50 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
     /**
      * posicion actual
      */
-    private int[] m_pos;
+    private Point m_posicionActual;
     
     /**
      * Direccion en la que esta mirando, absoluta en base al inicio
      * inicializandolo con 0 hacia donde comienza mirando.
      */
-    private byte m_dir;
+    private byte m_direccionActual;
     
     /**
      * Direccion de la cual sale de un nodo.
      */
-    private byte m_lDir;
+    private byte m_direccionAnteriorNodo;
     
     /**
      * Flag, para actualizar @m_lDir.
      */
-    private boolean m_f;
+    private boolean m_actualizarDireccion;
     
     /**
      * Key en el Treemap referente al ultimo nodo visitado.
      */
-    private String m_anterior;
+    private Point m_posicionAnterior;
     
     /**
      * Estructura de Datos con los NODOS
      */
-    private TreeMap<String,Nodo> m_mapa;
+    private TreeMap<Point,Nodo> m_mapa;
     
     
 
     public TeseoTest() {
         //Inicializacion de Variables
-        m_pos = new int[2];
-        m_pos[0] = 0; m_pos[1] = 0;
+        m_posicionActual = new Point(0, 0);
         
-        m_f = true;
-        m_dir = 0;
-        m_lDir = 0;
-        this.m_mapa = new TreeMap<String,Nodo>();
+        m_actualizarDireccion = true;
+        m_direccionActual = 0;
+        m_direccionAnteriorNodo = 0;
+        this.m_mapa = new TreeMap<>();
         
         //Crear nodo Incial (0,0) con las paredes que se tengan en el nodo
         //guiando de tal manera que @true seria si hay camino y @false si no hay camino
         //Nodo actual = New Nodo();
-        m_mapa.put(actualPos(), new Nodo());
-        m_anterior = actualPos();
+        m_mapa.put(posicionActual(), new Nodo());
+        m_posicionAnterior = posicionActual();
     }
     
   
@@ -59,56 +59,56 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
     @Override
     public int accion(boolean PF, boolean PD, boolean PA, boolean PI, boolean MT) {
         
-        Nodo lux = new Nodo();
-        int m_way = 0;
+        Nodo nodoActual = new Nodo();
+        int direccionLocalATomar = 0;
         
         //Inicio
-        System.out.println(m_dir + " - " + m_lDir + " - " + m_mapa);
+        System.out.println(m_direccionActual + " - " + m_direccionAnteriorNodo + " - " + m_mapa);
         
         if (MT) return -1;
         
-        if(bifurcacion(PF, PD, PA, PI)){
+        if(hayBifurcacion(PF, PD, PA, PI)){
             //Existe nodo en esta posicion?
-            if(m_mapa.containsKey(actualPos())){
+            if(m_mapa.containsKey(posicionActual())){
             //Si!
-                lux = m_mapa.get(actualPos());
+                nodoActual = m_mapa.get(posicionActual());
                 
-                if(!m_anterior.equals(actualPos())){
-                    lux.asignarNodos(m_mapa.get(m_anterior), newDir(2));
-                    m_mapa.get(m_anterior).asignarNodos(lux, m_lDir);
+                if(!m_posicionAnterior.equals(posicionActual())){
+                    nodoActual.asignarNodo(m_mapa.get(m_posicionAnterior), nuevaDireccion(2));
+                    m_mapa.get(m_posicionAnterior).asignarNodo(nodoActual, m_direccionAnteriorNodo);
                 }
-                else lux.sealWall(newDir(2));
+                else nodoActual.sellarVia(nuevaDireccion(2));
                 //Tiene vias?
-                System.out.println("Lux has NO F*CKING WAYZ!!! = " + lux.hasNoWays() + " Walls: " + lux.getWalls());
-                if(!lux.hasNoWays()){
+                System.out.println("Lux has NO F*CKING WAYZ!!! = " + nodoActual.noTieneVias() + " Walls: " + nodoActual.darVias());
+                if(!nodoActual.noTieneVias()){
                 //SI!!
-                    m_way = takeThisDir(lux.takeWay());
+                    direccionLocalATomar = direccionATomar(nodoActual.tomarVia());
                     //changeDir(<Valor del return subsiguiente>);
-                    changeDir(m_way);
+                    actualizarDireccion(direccionLocalATomar);
                     //Take one of those --AQUI RETURN--
-                    changePos();
-                    m_f = true;
-                    return m_way;
+                    cambiarPosicion();
+                    m_actualizarDireccion = true;
+                    return direccionLocalATomar;
                 }
                 else{
                 //NO!!
                     
                     //m_mapa.get(m_anterior);
-                    changeDir(2);
-                    m_f = true;
-                    changePos();
+                    actualizarDireccion(2);
+                    m_actualizarDireccion = true;
+                    cambiarPosicion();
                     return 2;
                 }
             }
             //NO!!
             else {
                 //Create New Node
-                m_mapa.put(actualPos(), new Nodo());
-                m_mapa.get(actualPos()).sealWalls(PF, PD, PI, m_dir);
-                m_mapa.get(actualPos()).asignarNodos(m_mapa.get(m_anterior), newDir(2));
-                m_mapa.get(m_anterior).asignarNodos(m_mapa.get(actualPos()), m_lDir);
-                m_anterior = actualPos();
-                m_f = true;
+                m_mapa.put(posicionActual(), new Nodo());
+                m_mapa.get(posicionActual()).sellarVias(PF, PD, PI, m_direccionActual);
+                m_mapa.get(posicionActual()).asignarNodo(m_mapa.get(m_posicionAnterior), nuevaDireccion(2));
+                m_mapa.get(m_posicionAnterior).asignarNodo(m_mapa.get(posicionActual()), m_direccionAnteriorNodo);
+                m_posicionAnterior = posicionActual();
+                m_actualizarDireccion = true;
             }
         }
           
@@ -124,13 +124,13 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
      * @param PI
      * @return 
      */
-    boolean bifurcacion(boolean PF, boolean PD, boolean PA, boolean PI) {
-        int sum = 0;
-        if (!PF) sum++;
-        if (!PI) sum++;
-        if (!PD) sum++;
+    boolean hayBifurcacion(boolean PF, boolean PD, boolean PA, boolean PI) {
+        int viasLibres = 0;
+        if (!PF) viasLibres++;
+        if (!PI) viasLibres++;
+        if (!PD) viasLibres++;
         
-        return sum > 1 && sum < 4;
+        return viasLibres > 1 && viasLibres < 4;
     }
     
     /**
@@ -141,63 +141,63 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
      * @param dir es aquel que posee la direccion en la cual esta viendo el
      * agente actualmente.
      */
-    private void changePos(){
-        switch(m_dir){
+    private void cambiarPosicion(){
+        switch(m_direccionActual){
             case 0:
-                m_pos[1]++;
+                m_posicionActual[1]--;
                 break;
             case 1:
-                m_pos[0]++;
+                m_posicionActual[0]++;
                 break;
             case 2:
-                m_pos[1]--;
+                m_posicionActual[1]++;
                 break;
             case 3:
-                m_pos[0]--;
+                m_posicionActual[0]--;
                 break;
             default:
                 break;
         }
     }
 
-    private void changeDir(int i) {
-        m_dir = (byte) ((m_dir+i)%4);
+    private void actualizarDireccion(int i) {
+        m_direccionActual = (byte) ((m_direccionActual+i)%4);
     }
 
     private int walkAlgorithm(boolean PF, boolean PD, boolean PA, boolean PI) {
         if (!PD){
-            changeDir(1);
-            changePos();
-            if(m_f){
-                m_lDir = m_dir;
-                m_f = false;
+            actualizarDireccion(1);
+            cambiarPosicion();
+            if(m_actualizarDireccion){
+                m_direccionAnteriorNodo = m_direccionActual;
+                m_actualizarDireccion = false;
             }
             return 1;
         }
         if (!PF){
-            changeDir(0);
-            changePos();
-            if(m_f){
-                m_lDir = m_dir;
-                m_f = false;
+            actualizarDireccion(0);
+            cambiarPosicion();
+            if(m_actualizarDireccion){
+                m_direccionAnteriorNodo = m_direccionActual;
+                m_actualizarDireccion = false;
             }
             return 0;
         }
         if (!PI){
-            changeDir(3);
-            changePos();
-            if(m_f){
-                m_lDir = m_dir;
-                m_f = false;
+            actualizarDireccion(3);
+            cambiarPosicion();
+            if(m_actualizarDireccion){
+                m_direccionAnteriorNodo = m_direccionActual;
+                m_actualizarDireccion = false;
             }
             return 3;
         }
         
-        changeDir(2);
-        changePos();
-        if(m_f){
-            m_lDir = m_dir;
-            m_f = false;
+        actualizarDireccion(2);
+        cambiarPosicion();
+        if(m_actualizarDireccion){
+            m_direccionAnteriorNodo = m_direccionActual;
+            m_actualizarDireccion = false;
         }
         return 2;
     }
@@ -206,24 +206,37 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
      * Retorna un @String como la key para el treemap
      * @return 
      */
-    private String actualPos() {
-        return m_pos[0] + "," + m_pos[1];
+    private Point posicionActual() {
+        return m_posicionActual;
     }
 
     /**
-     * Retorna una posicion de guardado para @Nodo dependiendo de la direccion actual
-     * @param i
+     * Retorna la dirección actual global a partir de una local
+     * @param direccionLocal
      * @return 
      */
-    private byte newDir(int i) {
-        return (byte) ((m_dir + i) % 4);
+    private byte nuevaDireccion(int direccionLocal) {
+        return (byte) ((m_direccionActual + direccionLocal) % 4);
     }
 
-    private int takeThisDir(int takeWay) {
-        int x = 0;
-        x = takeWay - m_dir;
-        if(x < 0) x += 4;
-        return x;
+    /**
+     * (m_direccionActual + direccionLocal) % 4 = direccionGlobal
+     * (a + x)%4 = b
+     * 
+     * x + a = 4*y + b
+     * 
+     * x = 4*y + b - a
+     * 
+     * rango de variables [0 .. 3]
+     * 
+     * @param direccionGlobalATomar
+     * @return 
+     */
+    private int direccionATomar(int direccionGlobalATomar) {
+        int viaLocalATomar = 0;
+        viaLocalATomar = direccionGlobalATomar - m_direccionActual;
+        if(viaLocalATomar < 0) viaLocalATomar += 4;
+        return viaLocalATomar;
     }
 
 }

@@ -12,19 +12,23 @@ package unalcol.agents.examples.labyrinth.teseo.coo;
  */
 public class Nodo {
     
-    private Nodo arriba;
-    private Nodo abajo;
-    private Nodo derecha;
-    private Nodo izquierda;
+    private Nodo n_nodoArriba;
+    private Nodo n_nodoAbajo;
+    private Nodo n_nodoDerecha;
+    private Nodo n_nodoIzquierda;
     
-    //4 bits menos significativos representan las 4 paredes
-    //visitado es 1, no visitado es 0
-    //si ya ha sido visitado y el nodo esta nullo es que no hay via
-    //de lo contrario no se ha visitado (no se ha tomado esa via)
-    private byte walls;
+    /**
+     * 4 bits menos significativos representan las 4 paredes
+     * visitado es 1, no visitado es 0
+     * si ya ha sido visitado y el nodo esta nullo es que no hay via
+     * de lo contrario no se ha visitado (no se ha tomado esa via)
+     */
+    
+    private byte n_viasVisitadas;
+    
 
     public Nodo() {
-        this.walls = 0;
+        this.n_viasVisitadas = 0;
     }
     
     /**
@@ -35,124 +39,124 @@ public class Nodo {
      * bit 2 = abajo
      * bit 3 = izquierda
      * los demas no se utilizaran
-     * @param nodo
-     * @param pos 
+     * @param porAsignar
+     * @param direccion 
      * 
      */
-    public void asignarNodos(Nodo nodo, byte pos ){
-        boolean s_seal;
+    public void asignarNodo(Nodo porAsignar, byte direccion ){
+        boolean porAsignarTieneVias;
         
-        s_seal = nodo.hasNoWays();
+        porAsignarTieneVias = porAsignar.noTieneVias();
         
-        if(pos == 0){
-            this.arriba = nodo;
-            if(s_seal) walls = (byte)(getWalls() | 1);
+        if(direccion == 0){
+            this.n_nodoArriba = porAsignar;
+            if(porAsignarTieneVias) n_viasVisitadas = (byte)(darVias() | 1);
         }
-        if(pos == 1){
-            this.derecha = nodo;
-            if(s_seal) walls = (byte)(getWalls() | 2);
+        if(direccion == 1){
+            this.n_nodoDerecha = porAsignar;
+            if(porAsignarTieneVias) n_viasVisitadas = (byte)(darVias() | 2);
         }
-        if(pos == 2){
-            this.abajo = nodo;
-            if(s_seal) walls = (byte)(getWalls() | 4);
+        if(direccion == 2){
+            this.n_nodoAbajo = porAsignar;
+            if(porAsignarTieneVias) n_viasVisitadas = (byte)(darVias() | 4);
         }
-        if(pos == 3){
-            this.izquierda = nodo;
-            if(s_seal) walls = (byte)(getWalls() | 8);
+        if(direccion == 3){
+            this.n_nodoIzquierda = porAsignar;
+            if(porAsignarTieneVias) n_viasVisitadas = (byte)(darVias() | 8);
         }
         
     }
 
-    protected boolean hasNoWays() {
-        return getWalls() == 15;
+    protected boolean noTieneVias() {
+        return (darVias() == 15);
     }
 
-    protected int takeWay() {
-        if((getWalls() & 1) == 0) return 0;
-        if((getWalls() & 2) == 0) return 1;
-        if((getWalls() & 8) == 0) return 3;
+    protected int tomarVia() {
+        if((darVias() & 1) == 0) return 0;
+        if((darVias() & 2) == 0) return 1;
+        if((darVias() & 8) == 0) return 3;
         return 2;
     }
 
-    void sealWalls(boolean PF, boolean PD, boolean PI, byte dir) {
-        if(dir == 0){
-        if(PF) walls = (byte) (getWalls() | 1);
-        if(PD) walls = (byte) (getWalls() | 2);
-        if(PI) walls = (byte) (getWalls()| 8);
-        //walls =        (byte) (getWalls() | 4);
+    void sellarVias(boolean PF, boolean PD, boolean PI, byte direccion) {
+        if(direccion == 0){
+            if(PF) n_viasVisitadas = (byte) (darVias() | 1);
+            if(PD) n_viasVisitadas = (byte) (darVias() | 2);
+            if(PI) n_viasVisitadas = (byte) (darVias() | 8);
+            //walls = (byte) (getWalls() | 4);
         }
         
-        if(dir == 1){
-        if(PF) walls = (byte) (getWalls() | 2);
-        if(PD) walls = (byte) (getWalls() | 4);
-        if(PI) walls = (byte) (getWalls() | 1);
-        //walls =        (byte) (getWalls() | 8);
+        if(direccion == 1){
+            if(PF) n_viasVisitadas = (byte) (darVias() | 2);
+            if(PD) n_viasVisitadas = (byte) (darVias() | 4);
+            if(PI) n_viasVisitadas = (byte) (darVias() | 1);
+            //walls = (byte) (getWalls() | 8);
         }
         
-        if(dir == 2){
-        if(PF) walls = (byte) (getWalls() | 4);
-        if(PD) walls = (byte) (getWalls() | 8);
-        if(PI) walls = (byte) (getWalls() | 2);
-        //walls =        (byte) (getWalls() | 1);
+        if(direccion == 2){
+            if(PF) n_viasVisitadas = (byte) (darVias() | 4);
+            if(PD) n_viasVisitadas = (byte) (darVias() | 8);
+            if(PI) n_viasVisitadas = (byte) (darVias() | 2);
+            //walls = (byte) (getWalls() | 1);
         }
         
-        if(dir == 3){
-        if(PF) walls = (byte) (getWalls() | 8);
-        if(PD) walls = (byte) (getWalls() | 1);
-        if(PI) walls = (byte) (getWalls() | 4);
-        //walls =        (byte) (getWalls() | 2);
+        if(direccion == 3){
+            if(PF) n_viasVisitadas = (byte) (darVias() | 8);
+            if(PD) n_viasVisitadas = (byte) (darVias() | 1);
+            if(PI) n_viasVisitadas = (byte) (darVias() | 4);
+            //walls =        (byte) (getWalls() | 2);
         }
-        System.out.println("WALLZ SEALED!!!! = " + getWalls() + " , " + PI + " , " + PF + " , " + PD);
+        System.out.println("WALLZ SEALED!!!! = " + darVias() + " , " + PI + " , " + PF + " , " + PD);
     }
     
     @Override
     public String toString() {
         boolean[] lol = new boolean[4];
-        lol[0] = this.getArriba() != null;
-        lol[1] = this.getDerecha() != null;
-        lol[2] = this.getAbajo() != null;
-        lol[3] = this.getIzquierda() != null;
+        lol[0] = this.darNodoArriba() != null;
+        lol[1] = this.darNodoDerecha() != null;
+        lol[2] = this.darNodoAbajo() != null;
+        lol[3] = this.darNodoIzquierda() != null;
         
-        return "[" + lol[0] + "," + lol[1] + "," + lol[2] + "," + lol[3] + " - " + Integer.toBinaryString(getWalls()) + "]";
+        return "[" + lol[0] + "," + lol[1] + "," + lol[2] + "," + lol[3] + " - " + Integer.toBinaryString(darVias()) + "]";
     }
 
-    void sealWall(byte newDir) {
-        walls = (byte) (getWalls() | 2^newDir);
+    void sellarVia(byte viaASellar) {
+        n_viasVisitadas = (byte) (darVias() | 2^viaASellar);
     }
 
     /**
      * @return the arriba
      */
-    public Nodo getArriba() {
-        return arriba;
+    public Nodo darNodoArriba() {
+        return n_nodoArriba;
     }
 
     /**
      * @return the abajo
      */
-    public Nodo getAbajo() {
-        return abajo;
+    public Nodo darNodoAbajo() {
+        return n_nodoAbajo;
     }
 
     /**
      * @return the derecha
      */
-    public Nodo getDerecha() {
-        return derecha;
+    public Nodo darNodoDerecha() {
+        return n_nodoDerecha;
     }
 
     /**
      * @return the izquierda
      */
-    public Nodo getIzquierda() {
-        return izquierda;
+    public Nodo darNodoIzquierda() {
+        return n_nodoIzquierda;
     }
 
     /**
      * @return the walls
      */
-    public byte getWalls() {
-        return walls;
+    public byte darVias() {
+        return n_viasVisitadas;
     }
     
 }

@@ -1,6 +1,6 @@
 package unalcol.agents.examples.labyrinth.teseo.coo;
 
-import java.awt.Point;
+
 import java.util.TreeMap;
 
 public class TeseoTest extends SimpleTeseoAgentProgramNew{
@@ -8,7 +8,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
     /**
      * posicion actual
      */
-    private Point m_posicionActual;
+    private Punto m_posicionActual;
     
     /**
      * Direccion en la que esta mirando, absoluta en base al inicio
@@ -29,18 +29,18 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
     /**
      * Key en el Treemap referente al ultimo nodo visitado.
      */
-    private Point m_posicionAnterior;
+    private Punto m_posicionAnterior;
     
     /**
      * Estructura de Datos con los NODOS
      */
-    private TreeMap<Point,Nodo> m_mapa;
+    private TreeMap<Punto,Nodo> m_mapa;
     
     
 
     public TeseoTest() {
         //Inicializacion de Variables
-        m_posicionActual = new Point(0, 0);
+        m_posicionActual = new Punto(0, 0);
         
         m_actualizarDireccion = true;
         m_direccionActual = 0;
@@ -86,7 +86,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
                     //changeDir(<Valor del return subsiguiente>);
                     actualizarDireccion(direccionLocalATomar);
                     //Take one of those --AQUI RETURN--
-                    cambiarPosicion();
+                    actualizarPosicion();
                     m_actualizarDireccion = true;
                     return direccionLocalATomar;
                 }
@@ -96,7 +96,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
                     //m_mapa.get(m_anterior);
                     actualizarDireccion(2);
                     m_actualizarDireccion = true;
-                    cambiarPosicion();
+                    actualizarPosicion();
                     return 2;
                 }
             }
@@ -105,6 +105,8 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
                 //Create New Node
                 m_mapa.put(posicionActual(), new Nodo());
                 m_mapa.get(posicionActual()).sellarVias(PF, PD, PI, m_direccionActual);
+                //nodoActual.sellarVia(nuevaDireccion(2));
+                m_mapa.get(posicionActual()).sellarVia(m_direccionAnteriorNodo);
                 m_mapa.get(posicionActual()).asignarNodo(m_mapa.get(m_posicionAnterior), nuevaDireccion(2));
                 m_mapa.get(m_posicionAnterior).asignarNodo(m_mapa.get(posicionActual()), m_direccionAnteriorNodo);
                 m_posicionAnterior = posicionActual();
@@ -112,7 +114,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
             }
         }
           
-        return walkAlgorithm(PF, PD, PA, PI);
+        return caminar(PF, PD, PA, PI);
     }
     
     /**
@@ -141,33 +143,34 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
      * @param dir es aquel que posee la direccion en la cual esta viendo el
      * agente actualmente.
      */
-    private void cambiarPosicion(){
+    private void actualizarPosicion(){
         switch(m_direccionActual){
             case 0:
-                m_posicionActual[1]--;
+                m_posicionActual.disminuirY();
+                
                 break;
             case 1:
-                m_posicionActual[0]++;
+                m_posicionActual.aumentarX();
                 break;
             case 2:
-                m_posicionActual[1]++;
+                m_posicionActual.aumentarY();
                 break;
             case 3:
-                m_posicionActual[0]--;
+                m_posicionActual.disminuirX();
                 break;
             default:
                 break;
         }
     }
 
-    private void actualizarDireccion(int i) {
-        m_direccionActual = (byte) ((m_direccionActual+i)%4);
+    private void actualizarDireccion(int direccionLocalATomar) {
+        m_direccionActual = (byte) ((m_direccionActual+direccionLocalATomar)%4);
     }
 
-    private int walkAlgorithm(boolean PF, boolean PD, boolean PA, boolean PI) {
+    private int caminar(boolean PF, boolean PD, boolean PA, boolean PI) {
         if (!PD){
             actualizarDireccion(1);
-            cambiarPosicion();
+            actualizarPosicion();
             if(m_actualizarDireccion){
                 m_direccionAnteriorNodo = m_direccionActual;
                 m_actualizarDireccion = false;
@@ -176,7 +179,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         }
         if (!PF){
             actualizarDireccion(0);
-            cambiarPosicion();
+            actualizarPosicion();
             if(m_actualizarDireccion){
                 m_direccionAnteriorNodo = m_direccionActual;
                 m_actualizarDireccion = false;
@@ -185,7 +188,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         }
         if (!PI){
             actualizarDireccion(3);
-            cambiarPosicion();
+            actualizarPosicion();
             if(m_actualizarDireccion){
                 m_direccionAnteriorNodo = m_direccionActual;
                 m_actualizarDireccion = false;
@@ -194,7 +197,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
         }
         
         actualizarDireccion(2);
-        cambiarPosicion();
+        actualizarPosicion();
         if(m_actualizarDireccion){
             m_direccionAnteriorNodo = m_direccionActual;
             m_actualizarDireccion = false;
@@ -206,7 +209,7 @@ public class TeseoTest extends SimpleTeseoAgentProgramNew{
      * Retorna un @String como la key para el treemap
      * @return 
      */
-    private Point posicionActual() {
+    private Punto posicionActual() {
         return m_posicionActual;
     }
 
